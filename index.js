@@ -35,7 +35,7 @@ const {PubSub} = require(`@google-cloud/pubsub`);
 const {Storage} = require(`@google-cloud/storage`);
 
 const bqSchema = require(`./bigquery-schema.json`);
-const config = require(`./config.json`);
+const config = require(process.env.CONFIG_PATH || `./config.json`);
 const configSchema = require(`./config.schema.json`);
 
 // Make filesystem write work with async/await
@@ -44,13 +44,16 @@ const readFile = promisify(fs.readFile);
 
 // Initialize new GC clients
 const bigquery = new BigQuery({
-  projectId: config.projectId
+  projectId: config.projectId,
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
 });
 const pubsub = new PubSub({
-  projectId: config.projectId
+  projectId: config.projectId,
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
 });
 const storage = new Storage({
-  projectId: config.projectId
+  projectId: config.projectId,
+  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS
 });
 
 const validator = new Validator;
